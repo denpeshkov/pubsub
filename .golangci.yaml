@@ -33,6 +33,8 @@ linters:
     - whitespace
     - wrapcheck
     - wsl
+    - wsl_v5
+    - noinlineerr
 
 formatters:
   enable:
@@ -42,4 +44,4 @@ formatters:
   settings:
     goimports:
       local-prefixes:
-        - github.com/denpeshkov/go-template
+        - github.com/denpeshkov/pubsub

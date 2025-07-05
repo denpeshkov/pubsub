@@ -6,8 +6,8 @@ on:
       - main
 
 jobs:
-  build_test:
-    name: Build, lint and test
+  test:
+    name: test
     env:
       # The special value "local" tells Go to use the bundled Go version rather
       # than trying to fetch one according to a `toolchain` value in `go.mod`.
@@ -30,17 +30,17 @@ jobs:
           go-version: ${{ matrix.go-version }}
           
       - name: Test
-        run: go test -race ./...
+        run: make test
 
-  golangci:
-    name: lint
+  golangci-lint:
+    name: golangci-lint
     strategy:
       matrix:
         go-version: [stable]
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     env:
-      GOLANGCI_LINT_VERSION: v2.0.2
+      GOLANGCI_LINT_VERSION: v2.2.1
     permissions:
       contents: read
 
@@ -54,6 +54,6 @@ jobs:
           go-version: ${{ matrix.go-version }}
 
       - name: Lint
-        uses: golangci/golangci-lint-action@v7
+        uses: golangci/golangci-lint-action@v8
         with:
           version: ${{ env.GOLANGCI_LINT_VERSION }}
