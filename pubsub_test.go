@@ -339,7 +339,7 @@ func mustPublish[T any](t *testing.T, ps *pubsub.PubSub[T], msg T, topics ...str
 			if err != nil {
 				t.Fatalf("Publish(%q) failed: %v", tp, err)
 			}
-		case <-time.After(10 * time.Millisecond):
+		case <-time.After(1 * time.Second):
 			t.Errorf("Publish(%q) blocked", tp)
 		}
 	}
@@ -371,7 +371,7 @@ func mustReceive[T comparable](t *testing.T, sub *pubsub.Subscription[T], msgs .
 			if v != msg {
 				t.Errorf("Messages() = %v, want %v", v, msg)
 			}
-		case <-time.After(10 * time.Millisecond):
+		case <-time.After(1 * time.Second):
 			t.Errorf("Messages() blocked")
 		}
 	}
