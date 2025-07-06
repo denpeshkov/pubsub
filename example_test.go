@@ -1,26 +1,15 @@
-# pubsub
-
-[![CI](https://github.com/denpeshkov/pubsub/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/denpeshkov/pubsub/actions/workflows/ci.yaml)
-[![Go Reference](https://pkg.go.dev/badge/github.com/denpeshkov/pubsub.svg)](https://pkg.go.dev/github.com/denpeshkov/pubsub)
-[![Go Report Card](https://goreportcard.com/badge/github.com/denpeshkov/pubsub)](https://goreportcard.com/report/github.com/denpeshkov/pubsub)
-
-An idiomatic, lightweight Go library for in-memory Publish-Subscribe messaging.
-
-# Usage
-
-```go
-package main
+package pubsub_test
 
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/denpeshkov/pubsub"
+
 	"golang.org/x/sync/errgroup"
 )
 
-func main() {
+func Example() {
 	// Create the PubSub.
 	ps := pubsub.New[string]()
 
@@ -36,14 +25,14 @@ func main() {
 	// Subscribe to topics.
 	sub, err := ps.Subscribe(100, "topic1", "topic2")
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	defer func() { _ = ps.Unsubscribe(sub) }()
 
 	// Start a goroutine to receive the messages.
 	g.Go(func() error {
 		for msg := range sub.Messages() {
-			log.Println("Received message:", msg)
+			fmt.Println("Received message:", msg)
 		}
 		return nil
 	})
@@ -51,17 +40,24 @@ func main() {
 	// Publish to topics.
 	for i := range 3 {
 		if err := ps.Publish(context.Background(), fmt.Sprintf("foo_%d", i), "topic1"); err != nil {
-			log.Fatalf(`Failed to publish to "topic1": %v`, err)
+			panic(err)
 		}
 		if err := ps.Publish(context.Background(), fmt.Sprintf("bar_%d", i), "topic1"); err != nil {
-			log.Fatalf(`Failed to publish to "topic2": %v`, err)
+			panic(err)
 		}
 	}
 
 	// Stop the PubSub.
 	cancel()
 	if err := g.Wait(); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
+
+	// Output:
+	// Received message: foo_0
+	// Received message: bar_0
+	// Received message: foo_1
+	// Received message: bar_1
+	// Received message: foo_2
+	// Received message: bar_2
 }
-```

@@ -21,7 +21,7 @@ func TestMain(m *testing.M) {
 func TestRun(t *testing.T) {
 	t.Parallel()
 
-	ps := pubsub.NewPubSub[struct{}]()
+	ps := pubsub.New[struct{}]()
 	ctx, cancel := context.WithCancel(t.Context())
 	stopCh := make(chan struct{})
 	go func() {
@@ -45,7 +45,7 @@ func TestRun(t *testing.T) {
 	t.Run("ErrPubSubClosed after close", func(t *testing.T) {
 		t.Parallel()
 
-		ps := pubsub.NewPubSub[struct{}]()
+		ps := pubsub.New[struct{}]()
 		ctx, stop := context.WithCancel(t.Context())
 		g, ctx := errgroup.WithContext(ctx)
 		g.Go(func() error { ps.Run(ctx); return nil })
@@ -295,7 +295,7 @@ func TestSubscribe_Unsubscribe_Topics(t *testing.T) {
 func newPubSub[T any](t *testing.T) *pubsub.PubSub[T] {
 	t.Helper()
 
-	ps := pubsub.NewPubSub[T]()
+	ps := pubsub.New[T]()
 
 	g, ctx := errgroup.WithContext(t.Context())
 	g.Go(func() error { ps.Run(ctx); return nil })

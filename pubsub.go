@@ -34,8 +34,8 @@ type PubSub[T any] struct {
 	closedCh chan struct{}
 }
 
-// NewPubSub returns a new [PubSub] instance.
-func NewPubSub[T any]() *PubSub[T] {
+// New returns a new [PubSub] instance.
+func New[T any]() *PubSub[T] {
 	return &PubSub[T]{
 		subs:     make(map[string][]*Subscription[T]),
 		actionCh: make(chan func()),
